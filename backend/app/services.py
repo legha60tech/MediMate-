@@ -4,7 +4,6 @@ import json
 import re
 import uuid
 from datetime import date, datetime, timedelta, timezone
-from twilio.rest import Client
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
 
