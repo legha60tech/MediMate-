@@ -1,0 +1,31 @@
+services:
+  - type: web
+    name: medimate-api
+    runtime: python
+    rootDir: backend
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /api/health
+    envVars:
+      - key: MEDIMATE_SEED_DEMO
+        value: "true"
+      - key: MEDIMATE_ENABLE_DEMO_CLOCK
+        value: "true"
+      - key: MEDIMATE_DEVICE_MODE
+        value: simulation
+      - key: MEDIMATE_CORS_ORIGINS
+        value: https://medimate-web.onrender.com
+
+  - type: web
+    name: medimate-web
+    runtime: static
+    buildCommand: npm ci --prefix frontend && npm run build --prefix frontend
+    staticPublishPath: frontend/dist
+    envVars:
+      - key: VITE_API_BASE_URL
+        value: https://medimate-api.onrender.com/api
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
